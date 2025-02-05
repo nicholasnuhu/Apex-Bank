@@ -27,22 +27,21 @@ try
     builder.Services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters();
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerExtension();
+    builder.Services.ConfigureIdentity();
+    builder.Services.ConfigureJwt(builder.Configuration);
     builder.Services.AddSeriLogExtension();
     builder.Services.AddCors();
     builder.Services.AddPaymentInfrastructure(config);
     builder.Services.AddApplicationLayer(config);
     builder.Services.AddMediatR(typeof(Payment.Core.AssemblyReference).Assembly);
-    builder.Services.AddIdentity<User, IdentityRole>()
-    .AddEntityFrameworkStores<PaymentDbContext>()
-    .AddDefaultTokenProviders();
 
 
     var app = builder.Build();
 
-    // Configure Seeder in the pipeline
+    //Configure Seeder in the pipeline
     using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<ISeedPaymentInitialData>();
-   // db.Seed().GetAwaiter().GetResult();
+    // db.Seed().GetAwaiter().GetResult();
 
     // Configure the HTTP request pipeline.
     if (app.Environment.IsDevelopment())
